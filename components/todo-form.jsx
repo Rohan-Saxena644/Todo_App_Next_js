@@ -13,6 +13,40 @@ import { Label } from '@/components/ui/label';
 import { createTodoSchema } from '@/validations/todo';
 
 const TodoForm = () => {
+
+    const [isOpen,setIsOpen] = useState(false);
+    const createTodoMutation = useCreateTodo();
+
+    const form = useForm({
+        resolver: zodResolver(createTodoSchema),
+        defaultValues:{
+            title:"",
+            description:"",
+            priority: "medium"
+        }
+    })
+
+    const onSubmit = async (data)=>{
+        try{
+            const result = await createTodoMutation.mutateAsync(data);
+
+            if(result.success){
+                toast.success("Todo created successfully");
+                form.reset();
+            }
+        }catch(error){
+            toast.error("Failed to create todo");
+        }
+    }
+
+    if(!isOpen){
+        return(
+            <Button onClick={()=>setIsOpen(true)}>
+                Add New Todo
+            </Button>
+        )
+    }
+
   return (
     <div>TodoForm</div>
   )
