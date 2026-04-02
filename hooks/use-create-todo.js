@@ -1,5 +1,4 @@
 import {createTodo} from "@/actions/todo-actions";
-import {createTodoSchema} from "@/validations/todo";
 import { useTodoStore } from "@/store/todo-store";
 import { useQueryClient , useMutation } from "@tanstack/react-query";
 
@@ -20,7 +19,8 @@ export function useCreateTodo(){
         mutationFn: async (data)=>(createTodo(data)),
         onSuccess: (result)=>{
             if(result.success){
-                addTodo(result.data);
+                // addTodo(result.data);
+                console.log(result);
                 queryClient.invalidateQueries({queryKey:todoKeys.lists()});
             }
         }

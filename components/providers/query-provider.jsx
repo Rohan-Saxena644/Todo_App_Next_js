@@ -8,8 +8,8 @@ export const QueryProvider = ({ children }) => {
     const [queryClient] = useState(() => new QueryClient());
     return (
         <QueryClientProvider client={queryClient}>
-            {children}
             <Toaster />
+            {children}
         </QueryClientProvider>
     );
 }

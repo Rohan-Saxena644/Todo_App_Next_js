@@ -1,12 +1,12 @@
-import { todo } from "node:test";
+// import { todo } from "node:test";
 import {create} from "zustand";
-import {devTools} from "zustand/middleware";
+import {devtools} from "zustand/middleware";
 
 export const useTodoStore = create(
-    devTools(
+    devtools(
         (set,get)=>({
             todos:[],
-            filter:all,
+            filter: "all",
             isLoading:false,
 
             setTodos:(todos)=>set({todos}),

@@ -3,6 +3,7 @@ import React from 'react'
 import { useState } from 'react';
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
+import {useCreateTodo} from '@/hooks/use-create-todo';
 
 import {Button} from "@/components/ui/button";
 import {Input} from "@/components/ui/input";
@@ -48,7 +49,49 @@ const TodoForm = () => {
     }
 
   return (
-    <div>TodoForm</div>
+    <div>
+        <Card>
+            <CardHeader>
+                <CardTitle>Create New Todo</CardTitle>
+                <CardDescription>Fill the form below to create a new todo item.</CardDescription>
+            </CardHeader>
+            <CardContent>
+                <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
+                    <div>
+                        <Label htmlFor='title'>Title</Label>
+                        <Input id='title' {...form.register("title")} />
+                        {form.formState.errors.title && <p className='text-red-500'>{form.formState.errors.title.message}</p>}
+                    </div>
+                    <div>
+                        <Label htmlFor='description'>Description</Label>
+                        <Textarea id='description' {...form.register("description")} />
+                        {form.formState.errors.description && <p className='text-red-500'>{form.formState.errors.description.message}</p>}
+                    </div>
+                    <div>
+                        <Label htmlFor='priority'>Priority</Label>
+                        <Select
+                        value = {form.watch("priority")}
+                        onValueChange={(value)=>form.setValue("priority",value)}
+                        >
+                            <SelectTrigger>
+                                <SelectValue placeholder='Select priority' />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value='low'>Low</SelectItem>
+                                <SelectItem value='medium'>Medium</SelectItem>
+                                <SelectItem value='high'>High</SelectItem>
+                            </SelectContent>
+                        </Select>
+                        {form.formState.errors.priority && <p className='text-red-500'>{form.formState.errors.priority.message}</p>}
+                    </div>
+                    <Button type='submit' variant="outline" disabled={createTodoMutation.isLoading} onClick={()=>{setIsOpen(false) 
+                        form.reset()}}>
+                        {createTodoMutation.isLoading ? "Creating..." : "Create Todo"}
+                    </Button>
+                </form>
+            </CardContent>
+        </Card>
+    </div>
   )
 }
 
