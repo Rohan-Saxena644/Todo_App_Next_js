@@ -1,43 +1,55 @@
-// import { todo } from "node:test";
-import {create} from "zustand";
-import {devtools} from "zustand/middleware";
+import { create } from "zustand";
+import { devtools } from "zustand/middleware";
 
 export const useTodoStore = create(
-    devtools(
-        (set,get)=>({
-            todos:[],
-            filter: "all",
-            isLoading:false,
+   devtools(
+    (set, get) => ({
+    
+      todos: [],
+      filter: "all",
+      isLoading: false,
 
-            setTodos:(todos)=>set({todos}),
+   
+      setTodos: (todos) => set({ todos }),
 
-            addTodo:(todo)=>set((state)=>({todos:[...state.todos,todo]})),
+      addTodo: (todo) =>
+        set((state) => ({
+          todos: [todo, ...state.todos],
+        })),
+        
 
-            setFilter: (filter)=>set({filter}),
-            setLoading: (isLoading)=>set({isLoading}),
+       updateTodo:(id,updates)=>
+        set((state)=>({
+          todos:state.todos.map((todo)=>(todo._id === id ? {...todo , ...updates} : todo))
+        })),
 
-            filteredTodos: ()=>{
-                const {todos,filter} = get()
-                switch(filter){
-                    case "completed":
-                        return todos.filter(todo=>todo.completed);
-                    case "pending":
-                        return todos.filter(todo=>!todo.completed);
-                    default:
-                        return todos;
-                }
-            },
+        removeTodo:(id)=>set((state)=>({
+          todos:state.todos.filter((todo)=>todo._id !== id)
+        })),
+        
+      setFilter: (filter) => set({ filter }),
 
-            completedCount: ()=>{
-                const {todos} = get();
-                return todos.filter(todo=>todo.completed).length;
-            },
-            activeCount: ()=>{
-                const {todos} = get();
-                return todos.filter(todo=>!todo.completed).length;
-            }
-        }),
+      setLoading: (isLoading) => set({ isLoading }),
 
-        {name:"todo-store"},
-    )
-)
+   
+      filteredTodos: () => {
+        const { todos, filter } = get()
+        switch (filter) {
+          case "active":
+            return todos.filter((todo) => !todo.completed)
+          case "completed":
+            return todos.filter((todo) => todo.completed)
+          default:
+            return todos
+        }
+      },
+
+      completedCount: () => get().todos.filter((todo) => todo.completed).length,
+
+      activeCount: () => get().todos.filter((todo) => !todo.completed).length,
+    }),
+    {
+      name: "todo-store", 
+    },
+  ),
+);

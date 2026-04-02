@@ -1,42 +1,47 @@
 "use client";
-import React from 'react'
-import { useTodoStore } from '@/store/todo-store';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import React from "react";
+
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { useTodoStore } from "@/store/todo-store";
 
 const TodoFilter = () => {
+  const { filter, setFilter, completedCount, activeCount } = useTodoStore();
 
-    const filter = useTodoStore((state) => state.filter);
-    const setFilter = useTodoStore((state) => state.setFilter);
-    const completedCount = useTodoStore((state) => state.completedCount);
-    const activeCount = useTodoStore((state) => state.activeCount);
+  const filters = [
+    { key: "all", label: "All", count: activeCount() + completedCount() },
+    { key: "active", label: "Active", count: activeCount() },
+    { key: "completed", label: "Completed", count: completedCount() },
+  ];
 
-    const filters = [
-        {Key: "all", Label: "ALL", count: activeCount() + completedCount()},
-        {Key: "active", Label: "Active", count: activeCount()},
-        {Key: "completed", Label: "Completed", count: completedCount()},
-    ]
+  return(
+     <Card className="mb-6">
+      <CardContent className="p-4">
+        <div className="flex items-center justify-between">
+          <div className="flex gap-2">
+            {filters.map(({ key, label, count }) => (
+              <Button
+                key={key}
+                variant={filter === key ? "default" : "outline"}
+                size="sm"
+                onClick={() => setFilter(key)}
+                className="relative"
+              >
+                {label}
+                {count > 0 && (
+                  <span className="ml-2 bg-muted text-muted-foreground rounded-full px-2 py-0.5 text-xs">{count}</span>
+                )}
+              </Button>
+            ))}
+          </div>
 
-  return (
-    <div>
-        <Card>
-            <CardHeader>
-                <CardTitle>Filter Todos</CardTitle>
-                <CardDescription>Use the buttons below to filter your todo list.</CardDescription>
-            </CardHeader>
-            <CardContent className='flex space-x-4'>
-                {filters.map(filterOption=>(
-                    <button
-                        key={filterOption.Key}
-                        className={`px-4 py-2 rounded ${filter === filterOption.Key ? "bg-blue-500 text-white" : "bg-gray-200"}`}
-                        onClick={()=>setFilter(filterOption.Key)}
-                    >
-                        {filterOption.Label} ({filterOption.count})
-                    </button>
-                ))}
-            </CardContent>
-        </Card>
-    </div>
+          <div className="text-sm text-muted-foreground">
+            {activeCount()} active, {completedCount()} completed
+          </div>
+        </div>
+      </CardContent>
+    </Card>
   )
-}
+};
 
-export default TodoFilter
+export default TodoFilter;
