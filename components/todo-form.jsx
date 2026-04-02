@@ -34,6 +34,7 @@ const TodoForm = () => {
             if(result.success){
                 toast.success("Todo created successfully");
                 form.reset();
+                setIsOpen(false);
             }
         }catch(error){
             toast.error("Failed to create todo");
@@ -64,7 +65,12 @@ const TodoForm = () => {
                     </div>
                     <div>
                         <Label htmlFor='description'>Description</Label>
-                        <Textarea id='description' {...form.register("description")} />
+                        <Textarea
+                            id="description"
+                            className="w-full resize-none overflow-hidden"
+                            rows={3}
+                            {...form.register("description")}
+                        />
                         {form.formState.errors.description && <p className='text-red-500'>{form.formState.errors.description.message}</p>}
                     </div>
                     <div>
@@ -84,8 +90,7 @@ const TodoForm = () => {
                         </Select>
                         {form.formState.errors.priority && <p className='text-red-500'>{form.formState.errors.priority.message}</p>}
                     </div>
-                    <Button type='submit' variant="outline" disabled={createTodoMutation.isLoading} onClick={()=>{setIsOpen(false) 
-                        form.reset()}}>
+                    <Button type='submit' variant="outline" disabled={createTodoMutation.isLoading} >
                         {createTodoMutation.isLoading ? "Creating..." : "Create Todo"}
                     </Button>
                 </form>

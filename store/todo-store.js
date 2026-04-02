@@ -14,7 +14,28 @@ export const useTodoStore = create(
             addTodo:(todo)=>set((state)=>({todos:[...state.todos,todo]})),
 
             setFilter: (filter)=>set({filter}),
-            setLoading: (isLoading)=>set({isLoading})
+            setLoading: (isLoading)=>set({isLoading}),
+
+            filteredTodos: ()=>{
+                const {todos,filter} = get()
+                switch(filter){
+                    case "completed":
+                        return todos.filter(todo=>todo.completed);
+                    case "pending":
+                        return todos.filter(todo=>!todo.completed);
+                    default:
+                        return todos;
+                }
+            },
+
+            completedCount: ()=>{
+                const {todos} = get();
+                return todos.filter(todo=>todo.completed).length;
+            },
+            activeCount: ()=>{
+                const {todos} = get();
+                return todos.filter(todo=>!todo.completed).length;
+            }
         }),
 
         {name:"todo-store"},
